@@ -34,11 +34,13 @@
     (when (held? "ArrowUp")
       (let [p (first (u/query-components em [:player]))
             pos (u/get-component p :position)]
-        (.move-up pos)))
+        (when (< 0 (pos :y))
+          (.move-up pos))))
     (when (held? "ArrowDown")
       (let [p (first (u/query-components em [:player]))
             pos (u/get-component p :position)]
-        (.move-down pos)))))
+        (when (> (u/get-height em) (pos :y))
+          (.move-down pos))))))
 
 (defn run-systems [em]
   (doto em
