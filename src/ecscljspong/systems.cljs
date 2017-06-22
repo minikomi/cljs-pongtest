@@ -66,7 +66,7 @@
     (when (>= 0 (pos :x))
       (reset! gs :you-win))))
 
-;; Check paddle reflect
+;; paddle reflect
 ;; --------------------------------------------------------------------
 
 (defn check-collision [b p]
@@ -102,6 +102,9 @@
         (when (check-collision ball (first (u/query-tag em :ai)))
           (.bounce-x vel))))))
 
+;; ball movement
+;; --------------------------------------------------------------------
+
 (defn move-ball [em]
   (let [gs (u/get-global em :game-state)]
     (when (= :playing @gs)
@@ -111,7 +114,13 @@
         (.set pos (+ (vel :dx) (pos :x))
               (+ (vel :dy) (pos :y)))))))
 
+;; AI
+;; --------------------------------------------------------------------
+
 (defn ai-paddle [em])
+
+;; Render
+;; --------------------------------------------------------------------
 
 (defn render-scene [em]
   (let [gs @(u/get-global em :game-state)
