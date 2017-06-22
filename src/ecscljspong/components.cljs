@@ -8,7 +8,7 @@
       :dy dy
       nil))
   Object
-  (velocity-set [v dx' dy']
+  (set [v dx' dy']
     (set! dx dx')
     (set! dy dy'))
   (bounce-x [_] (set! dx (- dx)))

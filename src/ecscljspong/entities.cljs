@@ -35,7 +35,7 @@
         circ (create-circle 8)]
     (.addChild (u/get-global em :stage) circ)
     (doto ball
-      (u/add-component :solid nil)
+      (u/add-tag :ball)
       (u/add-component :circ circ)
       (u/add-component :velocity (com/Velocity. 0 0))
       (u/add-component :position (com/Position. x y)))))
@@ -46,8 +46,8 @@
         y (/ (u/get-height em) 2)
         rect (create-rectangle em 10 (/ (u/get-height em) 5))]
     (doto paddle
-      (u/add-component :player true)
-      (u/add-component :solid true)
+      (u/add-tag :player)
+      (u/add-tag :paddle)
       (u/add-component :rect rect)
       (u/add-component :position (com/Position. x y)))))
 
@@ -58,9 +58,9 @@
         y (/ (.-height r) 2)
         rect (create-rectangle em 10 (/ (.-height r) 5))]
     (doto paddle
+      (u/add-tag :ai)
+      (u/add-tag :paddle)
       (u/add-component :speed 2)
-      (u/add-component :ai true)
-      (u/add-component :solid true)
       (u/add-component :rect rect)
       (u/add-component :position (com/Position. x y)))))
 

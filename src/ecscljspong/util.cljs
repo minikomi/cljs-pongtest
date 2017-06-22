@@ -12,8 +12,14 @@
 (defn add-component [entity c-name c-data]
   (.addComponent entity (name c-name) c-data))
 
+(defn add-tag [entity t-name]
+  (.addTag entity (name t-name)))
+
 (defn query-components [em cs]
   (.queryComponents em (vec->str-arr cs)))
+
+(defn query-tag [em t]
+  (.queryTag em (name t)))
 
 (defn get-global [em kw]
   (get (.-globals em) kw))
