@@ -54,7 +54,7 @@
 (defn make-ai-paddle [em]
   (let [paddle (.createEntity em)
         r (u/get-global em :renderer)
-        x (- (.-width (r)) 10)
+        x 10
         y (/ (.-height r) 2)
         rect (create-rectangle em 10 (/ (.-height r) 5))]
     (doto paddle
@@ -67,4 +67,5 @@
 (defn create-entities [em]
   (doto em
     make-ball
+    make-ai-paddle
     make-player-paddle))

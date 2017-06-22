@@ -13,7 +13,7 @@
 (println "start")
 
 (defn game []
-  (let [dom-node (atom false)
+  (let [dom-node   (atom false)
         game-state (r/atom :waiting)]
     (r/create-class
      {:display-name "game"
@@ -21,14 +21,14 @@
       (fn [this]
         (reset! dom-node (.getElementById js/document "game"))
         (let [renderer (.autoDetectRenderer js/PIXI 800 600)
-              stage (js/PIXI.Container.)
-              em (EM/Manager. {:renderer renderer
-                               :stage stage
-                               :game-state game-state})
-              loop-fn (fn loop []
-                        (when @dom-node
-                          (js/requestAnimationFrame loop))
-                        (sys/run-systems em))]
+              stage    (js/PIXI.Container.)
+              em       (EM/Manager. {:renderer   renderer
+                                     :stage      stage
+                                     :game-state game-state})
+              loop-fn  (fn loop []
+                         (when @dom-node
+                           (js/requestAnimationFrame loop))
+                         (sys/run-systems em))]
           ;; init
           (ev/init-events stage em)
           (ent/create-entities em)
