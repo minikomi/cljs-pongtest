@@ -69,11 +69,11 @@
                                           :closure-defines {'goog.DEBUG false}}})
   identity)
 
-(deftask dev []
+(deftask dev [p port PORT int "port for serving, default 3000"]
   (comp
    (development)
    (cider)
-   (serve)
+   (serve :port (or port 3000))
    (watch)
    (cljs-repl)
    (reload :on-jsload 'ecscljspong.core/init
