@@ -42,7 +42,7 @@
 
 (defn handle-inputs [em]
   (let [held? @ev/keys-held
-        gs (u/get-global em :game-state)]
+        gs    (u/get-global em :game-state)]
     (case @gs
       :playing (handle-playing-inputs held? em)
       (handle-default-inputs held? gs em))))
@@ -51,12 +51,12 @@
 ;; --------------------------------------------------------------------
 
 (defn check-ball-position [em]
-  (let [gs (u/get-global em :game-state)
-        ball (first (u/query-tag em :ball))
-        pos (u/get-component ball :position)
-        vel (u/get-component ball :velocity)
-        w (u/get-width em)
-        h (u/get-height em)]
+  (let [gs   (u/get-global em :game-state)
+        w    (u/get-width em)
+        h    (u/get-height em)
+        ball (u/get-tagged em :ball)
+        pos  (u/get-component ball :position)
+        vel  (u/get-component ball :velocity)]
     (when (or (>= 0 (pos :y))
               (<= h (pos :y)))
       (set! (.-y pos) (u/clamp (pos :y) 0 h))
@@ -88,19 +88,30 @@
          (< p-top-edge b-y)
          (> p-bottom-edge b-y))))
 
+(defn calc-spin [b p]
+  (let [b-pos (u/get-component b :position)
+        p-pos (u/get-component p :position)]
+   (*
+    (+ (- (b-pos :y) (p-pos :y)))
+    0.03)))
+
 (defn check-paddle-collision [em]
-  (println "paddle")
   (when (= :playing @(u/get-global em :game-state))
-    (let [ball (first (u/query-tag em :ball))
-          pos (u/get-component ball :position)
-          vel (u/get-component ball :velocity)
-          w (u/get-width em)
-          h (u/get-height em)]
+    (let [w    (u/get-width em)
+          h    (u/get-height em)
+          ball (u/get-tagged em :ball)
+          pos  (u/get-component ball :position)
+          vel  (u/get-component ball :velocity)
+          player (u/get-tagged em :player)
+          ai     (u/get-tagged em :ai)]
       (if (< 0 (vel :dx))
-        (when (check-collision ball (first (u/query-tag em :player)))
-          (.bounce-x vel))
-        (when (check-collision ball (first (u/query-tag em :ai)))
-          (.bounce-x vel))))))
+        (when (check-collision ball player)
+          (.bounce-x vel)
+          (.adjust-y vel (calc-spin ball player)
+                         ))
+        (when (check-collision ball (u/get-tagged em :ai))
+          (.bounce-x vel)
+          (.adjust-y vel (calc-spin ball ai)))))))
 
 ;; ball movement
 ;; --------------------------------------------------------------------
@@ -108,9 +119,9 @@
 (defn move-ball [em]
   (let [gs (u/get-global em :game-state)]
     (when (= :playing @gs)
-      (let [ball (first (u/query-tag em :ball))
-            pos (u/get-component ball :position)
-            vel (u/get-component ball :velocity)]
+      (let [ball (u/get-tagged em :ball)
+            pos  (u/get-component ball :position)
+            vel  (u/get-component ball :velocity)]
         (.set pos (+ (vel :dx) (pos :x))
               (+ (vel :dy) (pos :y)))))))
 
@@ -123,17 +134,20 @@
 ;; --------------------------------------------------------------------
 
 (defn render-scene [em]
-  (let [gs @(u/get-global em :game-state)
+  (let [gs       @(u/get-global em :game-state)
         renderer (u/get-global em :renderer)
-        stage (u/get-global em :stage)]
+        stage    (u/get-global em :stage)]
+    ;; set ball pos
     (doseq [e (u/query-components em [:circ])]
-      (let [c (u/get-component e :circ)
+      (let [c   (u/get-component e :circ)
             pos (u/get-component e :position)]
         (.set (.-position c) (pos :x) (pos :y))))
+    ;; set paddles pos
     (doseq [e (u/query-components em [:rect])]
-      (let [r (u/get-component e :rect)
+      (let [r   (u/get-component e :rect)
             pos (u/get-component e :position)]
         (.set (.-position r) (pos :x) (pos :y))))
+    ;; render
     (.render renderer stage)))
 
 (defn run-systems [em]

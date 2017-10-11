@@ -13,6 +13,7 @@
     (set! dy dy'))
   (bounce-x [_] (set! dx (- dx)))
   (bounce-y [_] (set! dy (- dy)))
+  (adjust-y [_ v] (set! dy (+ dy v)))
   (gravity [_] (set! dy (inc dy))))
 
 (deftype Position [^:mutable x ^:mutable y]

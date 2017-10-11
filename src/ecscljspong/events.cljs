@@ -1,7 +1,7 @@
 (ns ecscljspong.events
   (:require
-    [ecscljspong.util :as u]
-    [goog.events :as events])
+   [ecscljspong.util :as u]
+   [goog.events :as events])
   (:import [goog.events EventType]))
 
 (def event-bus (volatile! []))
@@ -47,7 +47,6 @@
      (vswap! keys-held conj k))
    :key-up
    (fn key-down-handler [_ k]
-     (println k)
      (vswap! keys-held disj k))
    :mouse-down
    (fn mouse-down-handler [_ data]

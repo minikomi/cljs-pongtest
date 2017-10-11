@@ -21,6 +21,9 @@
 (defn query-tag [em t]
   (.queryTag em (name t)))
 
+(defn get-tagged [em t]
+  (first (.queryTag em (name t))))
+
 (defn get-global [em kw]
   (get (.-globals em) kw))
 
